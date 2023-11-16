@@ -4,3 +4,4 @@ beautifulsoup4==4.12.2
 colorama==0.4.6
 random2
 Flask
+flask-cors
