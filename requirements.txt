@@ -4,6 +4,4 @@ beautifulsoup4==4.12.2
 colorama==0.4.6
 os-sys
 random2
-os
-json
 Flask
