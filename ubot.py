@@ -3,6 +3,7 @@ from pack import banner
 import json
 import os
 from flask import Flask, jsonify
+from flask_cors import CORS
 
 # A function to create a json out of datas
 # def toJson(a):
@@ -60,6 +61,7 @@ def get_coupons():
     combined_list = [item for sublist in [discudemy(), real_disc(), udemy_freebies(), udemy_coupons_me()] if sublist for item in sublist]
     json_data = toJson(combined_list)
     return jsonify(json_data)
+CORS(app)
 
 def toJson(a):
     json_list = []
@@ -69,5 +71,5 @@ def toJson(a):
     return json_list
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
   
