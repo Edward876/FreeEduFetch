@@ -8,3 +8,5 @@ PyYAML
 flask-cors
 aiohttp
 aiocache
+asyncio
+functools
