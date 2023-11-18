@@ -9,7 +9,8 @@ Welcome to the FreeEduFetch API documentation. FreeEduFetch is an API that provi
 - **YAML**: [https://free-edu.onrender.com/api/coupons/yaml](https://free-edu.onrender.com/api/coupons/yaml)
 - **TXT**: [https://free-edu.onrender.com/api/coupons/txt](https://free-edu.onrender.com/api/coupons/txt)
 - **CSV**: [https://free-edu.onrender.com/api/coupons/csv](https://free-edu.onrender.com/api/coupons/csv)
-🔗 **Or you can just use as** [https://free-edu.onrender.com/](https://free-edu.onrender.com/)
+### Not a developer? 
+#### 🏷️ You can just use as [https://free-edu.onrender.com/](https://free-edu.onrender.com/)
 ## Data Formats
 
 The FreeEduFetch API supports multiple data formats for your convenience:
