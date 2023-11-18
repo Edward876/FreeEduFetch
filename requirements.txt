@@ -6,3 +6,5 @@ Flask
 dicttoxml
 PyYAML
 flask-cors
+aiohttp
+aiocache
