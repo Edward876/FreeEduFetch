@@ -7,3 +7,4 @@ flask-cors==4.0.0
 aiohttp==3.8.6
 aiocache==0.12.2
 asyncio==3.4.3
+PyYAML
