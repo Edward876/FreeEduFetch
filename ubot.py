@@ -1,119 +1,202 @@
-from pack import functions
+import aiohttp
+import asyncio
+from aiohttp import ClientSession
+from aiohttp.client_exceptions import ClientError
+from bs4 import BeautifulSoup
+from functools import lru_cache
+from flask import Flask, jsonify, render_template_string
+from aiocache import Cache
+from aiocache.serializers import JsonSerializer
 import json
-import os
-from flask import Flask, jsonify, make_response
-from dicttoxml import dicttoxml
 import yaml
 import csv
-from io import StringIO
-from flask_cors import CORS
+
 app = Flask(__name__)
+cache = Cache(Cache.MEMORY, serializer=JsonSerializer(), namespace="coupons", ttl=600)
 
+async def fetch(url):
+    async with ClientSession() as session:
+        try:
+            async with session.get(url) as response:
+                return await response.text()
+        except ClientError as e:
+            print(f"Error fetching URL {url}: {e}")
+            return None
 
-def discudemy():
-    list_of_coupons_and_title = functions.discudemy(1)
-    return list_of_coupons_and_title
+@lru_cache(maxsize=None, typed=False)
+async def fetch_and_cache(url):
+    html = await fetch(url)
+    return html
 
-def learnviral():
-    list_of_coupons_and_title = functions.learnviral(1)
-    return list_of_coupons_and_title
+async def fetch_go_link(link):
+    html = await fetch_and_cache(link)
+    if html:
+        soup = BeautifulSoup(html, 'html.parser')
+        link_class = soup.select('.ui.center.aligned.basic.segment a')
+        return link_class[0].get('href') if link_class else None
+    return None
 
-def real_disc():
-    list_of_coupons_and_title = functions.real_disc(1)
-    return list_of_coupons_and_title
+async def fetch_coupon(link):
+    html = await fetch_and_cache(link)
+    if html:
+        soup = BeautifulSoup(html, 'html.parser')
+        title = soup.select_one('.ui.grey.header')
+        enroll = soup.select_one('.ui.segment a')
+        return {'title': title.text.strip(), 'enroll': enroll.get('href')} if title and enroll else None
+    return None
 
-def udemy_freebies():
-    list_of_coupons_and_title = functions.udemy_freebies(1)
-    return list_of_coupons_and_title
+async def fetch_coupons():
+    try:
+        response = await fetch('https://www.discudemy.com/all')
+        soup = BeautifulSoup(response, 'html.parser')
+        link_class = soup.select('.card-header')
+        hn = [item.get('href') for item in link_class]
 
-def udemy_coupons_me():
-    list_of_coupons_and_title = functions.udemy_coupons_me(1)
-    return list_of_coupons_and_title    
+        go_links = await asyncio.gather(*(fetch_go_link(link) for link in hn))
+        coupons = await asyncio.gather(*(fetch_coupon(link) for link in go_links if link))
 
+        valid_coupons = [coupon for coupon in coupons if coupon]
 
+        return valid_coupons
+    except Exception as error:
+        raise error
 
+async def fetch_and_cache_coupons():
+    courses = await fetch_coupons()
+    await cache.set("courses", courses)
+    return courses
 
-def toJson(a):
-    json_list = []
-    for element in a:
-        title, url = element.split("||")
-        json_list.append({"title": title, "url": url})
-    return json_list
+@app.route('/')
+async def view_coupons():
+    try:
+        courses = await cache.get("courses")
+        if not courses:
+            courses = await fetch_and_cache_coupons()
+        html_string = '''
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Course Coupons</title>
+                <style>
+                    body {
+                        font-family: 'Arial', sans-serif;
+                        background-color: #f4f4f4;
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    .container {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 20px;
+                        justify-content: space-between;  /* Added for three cards in one line */
+                        max-width: 1200px;
+                        margin: 0 auto;
+                    }
+                    .card {
+                        flex: 0 0 calc(33.333% - 20px);
+                        background-color: #fff;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        transition: transform 0.2s ease-in-out;
+                        margin-bottom: 20px;  /* Added for spacing between rows */
+                    }
+                    .card:hover {
+                        transform: scale(1.05);
+                    }
+                    .content {
+                        padding: 15px;
+                        text-align: center;
+                    }
+                    h3 {
+                        margin-top: 0;
+                        font-size: 18px;
+                        color: #333;
+                    }
+                    a {
+                        display: block;
+                        margin-top: 15px;
+                        text-decoration: none;
+                        background-color: #4CAF50;
+                        color: white;
+                        padding: 10px 15px;
+                        font-size: 16px;
+                        border-radius: 4px;
+                        transition: background-color 0.3s ease-in-out;
+                    }
+                    a:hover {
+                        background-color: #45a049;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+        '''
 
-def toTxt(a):
-    txt_list = []
-    txt_list.append("FREE EDU FETCH\n")
-    for index, element in enumerate(a, start=1):
-        title, url = element.split("||")
-        txt_list.append(f"{index}. {title}\n   {url}\n")
-    return ''.join(txt_list)
+        for course in courses:
+            html_string += f'''
+                <div class="card">
+                    <div class="content">
+                        <h3>{course['title']}</h3>
+                        <a href="{course['enroll']}" target="_blank">Enroll Now</a>
+                    </div>
+                </div>
+            '''
 
-def toXml(a):
+        html_string += '''
+                </div>
+            </body>
+            </html>
+        '''
+
+        return html_string
+
+    except Exception as error:
+        print('An error occurred while fetching coupons:', error)
+        return jsonify({'error': 'An error occurred while fetching coupons.'}), 500
+    
+@app.route('/api/coupons/<format>', methods=['GET'])
+async def get_coupons_by_format(format):
+    try:
+        courses = await cache.get("courses")
+        if not courses:
+            courses = await fetch_and_cache_coupons()
+
+        format_handlers = {
+            'json': jsonify,
+            'txt': lambda x: jsonify(x),
+            'xml': to_xml,
+            'yaml': to_yaml,
+            'csv': to_csv,
+        }
+
+        if format not in format_handlers:
+            return jsonify({'error': f'Unsupported format: {format}'}), 400
+
+        return format_handlers[format](courses)
+
+    except Exception as error:
+        print('An error occurred while fetching coupons:', error)
+        return jsonify({'error': 'An error occurred while fetching coupons.'}), 500
+
+def to_xml(courses):
     xml_data = '<root>\n'
-    for index, element in enumerate(a, start=1):
-        title, url = element.split("||")
-        xml_data += f'  <item>\n    <index>{index}</index>\n    <title>{title}</title>\n    <url>{url}</url>\n  </item>\n'
+    for index, course in enumerate(courses, start=1):
+        xml_data += f'  <item>\n    <index>{index}</index>\n    <title>{course["title"]}</title>\n    <url>{course["enroll"]}</url>\n  </item>\n'
     xml_data += '</root>'
     return xml_data
 
-def toYaml(a):
-    yaml_data = [{'title': title, 'url': url} for title, url in [element.split("||") for element in a]]
+def to_yaml(courses):
+    yaml_data = [{'title': course['title'], 'url': course['enroll']} for course in courses]
     return yaml.dump(yaml_data, default_flow_style=False)
 
-def toCsv(a):
+def to_csv(courses):
     csv_data = [['index', 'title', 'url']]
-    csv_data.extend([(str(index), title, url) for index, (title, url) in enumerate([element.split("||") for element in a], start=1)])
+    csv_data.extend([(str(index), course['title'], course['enroll']) for index, course in enumerate(courses, start=1)])
     return csv_data
-
-#using Flask
-@app.route('/api/coupons/json', methods=['GET'])
-def get_coupons_json():
-    combined_list = [item for sublist in [discudemy(), real_disc(), udemy_freebies(), udemy_coupons_me()] if sublist for item in sublist]
-    json_data = toJson(combined_list)
-    return jsonify(json_data)
-
-@app.route('/api/coupons/txt', methods=['GET'])
-def get_coupons_txt():
-    combined_list = [item for sublist in [discudemy(), real_disc(), udemy_freebies(), udemy_coupons_me()] if sublist for item in sublist]
-    txt_data = toTxt(combined_list)
-    return txt_data, 200, {'Content-Type': 'text/plain'}
-
-@app.route('/api/coupons/xml', methods=['GET'])
-def get_coupons_xml():
-    combined_list = [item for sublist in [discudemy(), real_disc(), udemy_freebies(), udemy_coupons_me()] if sublist for item in sublist]
-    xml_data = toXml(combined_list)
-    response = make_response(xml_data)
-    response.headers['Content-Type'] = 'application/xml'
-    return response
-
-@app.route('/api/coupons/yaml', methods=['GET'])
-def get_coupons_yaml():
-    combined_list = [item for sublist in [discudemy(), real_disc(), udemy_freebies(), udemy_coupons_me()] if sublist for item in sublist]
-    yaml_data = toYaml(combined_list)
-    response = make_response(yaml_data)
-    response.headers['Content-Type'] = 'application/yaml'
-    return response
-
-@app.route('/api/coupons/csv', methods=['GET'])
-def get_coupons_csv():
-    combined_list = [item for sublist in [discudemy(), real_disc(), udemy_freebies(), udemy_coupons_me()] if sublist for item in sublist]
-    csv_data = toCsv(combined_list)
-
-    # Create a file-like object in memory
-    csv_buffer = StringIO()
-    writer = csv.writer(csv_buffer)
-
-    # Write CSV data to the buffer
-    writer.writerows(csv_data)
-
-    response = make_response(csv_buffer.getvalue())
-    response.headers['Content-Type'] = 'text/csv'
-    response.headers['Content-Disposition'] = 'attachment; filename=coupons.csv'
-
-    return response
-
-CORS(app)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=False)
-  
