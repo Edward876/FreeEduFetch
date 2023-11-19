@@ -82,7 +82,9 @@ async def view_coupons():
                 <style>
                     body {
                         font-family: 'Arial', sans-serif;
-                        background-color: #f4f4f4;
+                        background-image: url('https://wallpapers.com/images/hd/anime-girl-with-headphones-study-aesthetic-pkqx253gjlzxjcga.jpg');
+                        background-size: cover;
+                        filter: blur(5px);
                         margin: 0;
                         padding: 20px;
                     }
