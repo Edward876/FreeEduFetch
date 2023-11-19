@@ -132,15 +132,15 @@ async def view_coupons():
                     a:hover {
                         background-color: rgba(119, 189, 46, 0.94);
                     }
-                @media screen and (max-width: 768px) {
+               @media screen and (max-width: 767px) {
     .card {
-        flex: 0 0 calc(50% - 20px); /* Two cards in a row for medium screens */
+        flex: 0 0 calc(50% - 20px); /* Two cards in a row for screens up to 767px width */
     }
 }
 
 @media screen and (max-width: 480px) {
     .card {
-        flex: 0 0 calc(100% - 20px); /* One card in a row for small screens */
+        flex: 0 0 calc(100% - 20px); /* One card in a row for screens up to 480px width */
     }
 }
 
