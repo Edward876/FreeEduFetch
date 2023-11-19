@@ -98,7 +98,7 @@ async def view_coupons():
                     }
                     .card {
                         flex: 0 0 calc(33.333% - 20px);
-                        background-color: #fff;
+                        background-color: rgba(196, 239, 239, 0.55);
                         border: 1px solid #ddd;
                         border-radius: 8px;
                         overflow: hidden;
