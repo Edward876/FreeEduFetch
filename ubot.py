@@ -83,7 +83,7 @@ async def view_coupons():
                     body {
                         font-family: 'Arial', sans-serif;
                         background-image: url('https://i.postimg.cc/ry3pMvBQ/newimg.jpg');
-                        background-size: 100% 100%
+                        background-size: cover;
                         background-repeat: no-repeat !important;
                         margin: 0;
                         padding: 20px;
