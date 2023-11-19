@@ -122,7 +122,7 @@ async def view_coupons():
                         display: block;
                         margin-top: 15px;
                         text-decoration: none;
-                        background-color: #4CAF50;
+                        background-color: rgba(148, 233, 59, 0.55);
                         color: white;
                         padding: 10px 15px;
                         font-size: 16px;
@@ -130,7 +130,7 @@ async def view_coupons():
                         transition: background-color 0.3s ease-in-out;
                     }
                     a:hover {
-                        background-color: #45a049;
+                        background-color: rgba(119, 189, 46, 0.94);
                     }
                 </style>
             </head>
