@@ -82,7 +82,7 @@ async def view_coupons():
                 <style>
                     body {
                         font-family: 'Arial', sans-serif;
-                        background-image: url('https://i.ibb.co/CPKmp07/image.jpg');
+                        background-image: url('https://wallpaperaccess.com/full/2059327.jpg');
                         background-size: cover
                         background-repeat: no-repeat !important;
                         margin: 0;
