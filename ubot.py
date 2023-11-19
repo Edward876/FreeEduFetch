@@ -143,7 +143,14 @@ async def view_coupons():
         flex: 0 0 calc(100% - 20px); /* One card in a row for screens up to 480px width */
     }
 }
-
+ .container {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 20px;
+                        justify-content: space-between;  /* Added for three cards in one line */
+                        max-width: 1200px;
+                        margin: 0 auto;
+                    }
 .card:hover {
     transform: scale(1.05);
 }
