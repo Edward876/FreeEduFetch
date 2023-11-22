@@ -119,21 +119,20 @@ async def view_coupons():
                         color: #333;
                     }
                    a {
-        display: block;
-        margin-top: 15px;
-        text-decoration: none;
-        background-color: rgba(148, 233, 59, 0.55);
-        color: white;
-        padding: 10px 15px;
-        font-size: 16px;
-        border-radius: 4px;
-        transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    }
+                    	display: block;
+                    	margin-top: 15px;
+                    	text-decoration: none;
+                    	background-color: rgba(148, 233, 59, 0.55);
+                    	color: white;
+                    	padding: 10px 15px;
+                    	font-size: 16px;
+                    	border-radius: 4px;
+                    	transition: background-color 0.3s ease-in-out;
+                	}
+                	a:hover {
+                    	background-color: rgba(119, 189, 46, 0.94);
+                	}
 
-    a:hover {
-        background-color: rgba(119, 189, 46, 0.94);
-        transform: scale(1.1);
-    }
                @media screen and (max-width: 767px) {
     .card {
         flex: 0 0 calc(50% - 20px); /* Two cards in a row for screens up to 767px width */
