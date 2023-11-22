@@ -10,7 +10,7 @@ Welcome to the FreeEduFetch API documentation. FreeEduFetch is an API that provi
 - **TXT**: [https://free-edu.onrender.com/api/coupons/txt](https://free-edu.onrender.com/api/coupons/txt)
 - **CSV**: [https://free-edu.onrender.com/api/coupons/csv](https://free-edu.onrender.com/api/coupons/csv)
 #### Or you can just use as [https://free-edu.onrender.com/](https://free-edu.onrender.com/)
-##### It will show like this - 
+#### It will show like this - 
 [![Screenshot-2023-11-22-111402.png](https://i.postimg.cc/g2Nc6Xpp/Screenshot-2023-11-22-111402.png)](https://postimg.cc/hXQRkGhZ)
 ## Data Formats
 
