@@ -73,7 +73,7 @@ async def view_coupons():
         if not courses:
             courses = await fetch_and_cache_coupons()
         html_string = '''
-            <!DOCTYPE html>
+          <!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -82,7 +82,7 @@ async def view_coupons():
                 <style>
                     body {
                         font-family: 'Arial', sans-serif;
-                        background-image: url('https://i.postimg.cc/ry3pMvBQ/newimg.jpg');
+                        background-image: url('https://i.postimg.cc/mrCphnKF/2059377-magicstudio-kl89m8qj0xn.png');
                         background-size: cover;
                         background-repeat: no-repeat !important;
                         margin: 0;
@@ -98,7 +98,7 @@ async def view_coupons():
                     }
                     .card {
                         flex: 0 0 calc(33.333% - 20px);
-                        background-color: rgba(196, 239, 239, 0.55);
+                        background-color: rgba(253, 193, 133, 0.65);
                         border: 1px rgba(21, 153, 144, 0.47);
                         border-radius: 8px;
                         overflow: hidden;
@@ -122,7 +122,7 @@ async def view_coupons():
                     	display: block;
                     	margin-top: 15px;
                     	text-decoration: none;
-                    	background-color: rgba(148, 233, 59, 0.55);
+                    	background-color: rgba(220, 31, 31, 0.64);
                     	color: white;
                     	padding: 10px 15px;
                     	font-size: 16px;
@@ -130,7 +130,7 @@ async def view_coupons():
                     	transition: background-color 0.3s ease-in-out;
                 	}
                 	a:hover {
-                    	background-color: rgba(119, 189, 46, 0.94);
+                    	background-color: rgba(247, 5, 5, 0.86);
                 	}
 
                @media screen and (max-width: 767px) {
@@ -171,7 +171,7 @@ a {
     display: block;
     margin-top: 15px;
     text-decoration: none;
-    background-color: rgba(148, 233, 59, 0.55);
+    background-color: rgba(220, 31, 31, 0.64);
     color: white;
     padding: 10px 15px;
     font-size: 16px;
@@ -180,7 +180,7 @@ a {
 }
 
 a:hover {
-    background-color: rgba(119, 189, 46, 0.94);
+    background-color: rgba(247, 5, 5, 0.86);
 }
                 </style>
             </head>
